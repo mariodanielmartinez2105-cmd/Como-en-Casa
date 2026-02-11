@@ -76,9 +76,7 @@
             </section>
 
             <section id="tab-semanal" class="tab-content space-y-6">
-                <div class="flex justify-between items-end">
-                    <h3 class="text-3xl font-black-italic italic text-orange-600 uppercase">Menú Semanal</h3>
-                </div>
+                <h3 class="text-3xl font-black-italic italic text-orange-600 uppercase">Menú Semanal</h3>
                 <div class="glass-card">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
@@ -107,15 +105,38 @@
             </section>
 
             <section id="tab-contacto" class="tab-content space-y-6">
-                <h3 class="text-3xl font-black-italic italic text-orange-600 uppercase">Configuración</h3>
-                <div class="glass-card grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2"><label class="text-[10px] font-black uppercase text-gray-500">Horarios</label>
-                    <div class="flex gap-2"><input type="time" id="h-open" class="input-master"><input type="time" id="h-close" class="input-master"></div></div>
-                    <div><label class="text-[10px] font-black uppercase text-gray-500">WhatsApp</label><input type="text" id="c-wa" class="input-master"></div>
-                    <div><label class="text-[10px] font-black uppercase text-gray-500">Instagram</label><input type="text" id="c-ig" class="input-master"></div>
-                    <div><label class="text-[10px] font-black uppercase text-gray-500">Facebook</label><input type="text" id="c-fb" class="input-master"></div>
-                    <div><label class="text-[10px] font-black uppercase text-gray-500">Email</label><input type="email" id="c-mail" class="input-master"></div>
-                    <button onclick="saveGeneral()" class="md:col-span-2 bg-orange-600 py-4 rounded-xl font-black italic uppercase">Actualizar Datos</button>
+                <h3 class="text-3xl font-black-italic italic text-orange-600 uppercase">Configuración Web</h3>
+                <div class="glass-card grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2 space-y-4">
+                        <p class="text-orange-600 font-black italic text-xs border-b border-orange-600/20 pb-2">UBICACIÓN Y MAPA</p>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-gray-500">Dirección (Texto)</label>
+                            <input type="text" id="c-dir" placeholder="Av. Primero de Mayo, 14" class="input-master">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-gray-500">Google Maps Link (Botón "Cómo llegar")</label>
+                            <input type="text" id="c-maps-link" placeholder="https://goo.gl/maps/..." class="input-master">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-gray-500">Google Maps Embed URL (Iframe del mapa)</label>
+                            <input type="text" id="c-maps-embed" placeholder="https://www.google.com/maps/embed?..." class="input-master">
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 space-y-4 pt-4">
+                         <p class="text-orange-600 font-black italic text-xs border-b border-orange-600/20 pb-2">CONTACTO Y HORARIOS</p>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="text-[10px] font-black uppercase text-gray-500">Horarios</label>
+                        <div class="flex gap-2"><input type="time" id="h-open" class="input-master"><input type="time" id="h-close" class="input-master"></div>
+                    </div>
+                    <div><label class="text-[10px] font-black uppercase text-gray-500">WhatsApp (Número sin espacios)</label><input type="text" id="c-wa" class="input-master"></div>
+                    <div><label class="text-[10px] font-black uppercase text-gray-500">Instagram URL</label><input type="text" id="c-ig" class="input-master"></div>
+                    <div><label class="text-[10px] font-black uppercase text-gray-500">Facebook URL</label><input type="text" id="c-fb" class="input-master"></div>
+                    <div><label class="text-[10px] font-black uppercase text-gray-500">Email Público</label><input type="email" id="c-mail" class="input-master"></div>
+                    
+                    <button onclick="saveGeneral()" class="md:col-span-2 bg-orange-600 py-4 rounded-xl font-black italic uppercase text-xs">Actualizar Toda la Web</button>
                 </div>
             </section>
 
@@ -152,7 +173,6 @@
         }
 
         function init() {
-            // Escuchar Categorías
             dbRef.ref('cats').on('value', s => {
                 localCats = s.val() || [
                     { id: 'bebida', name: 'Bebidas' }, { id: 'desayuno', name: 'Desayunos' }, 
@@ -160,20 +180,10 @@
                 ];
                 renderCatOptions(); renderCatsList(); renderDB();
             });
-
-            // Escuchar Carta
             dbRef.ref('db').on('value', s => { localDB = s.val() || []; renderDB(); });
-
-            // Escuchar Menú Semanal
             dbRef.ref('menu_s').on('value', s => { localMenuS = s.val() || { items: [] }; loadMenuConfig(); });
-
-            // Escuchar Galería
             dbRef.ref('galeria').on('value', s => { renderGaleria(s.val() || []); });
-
-            // Escuchar Reservas
             dbRef.ref('reservas').on('value', s => { renderReservas(s.val() || []); });
-
-            // Escuchar Config General
             dbRef.ref('config').on('value', s => { loadGeneralConfig(s.val() || {}); });
         }
 
@@ -207,7 +217,7 @@
             }
         }
 
-        // LA CARTA
+        // CARTA
         function updatePriceInputs() {
             const cat = document.getElementById('p-cat').value;
             const area = document.getElementById('price-area');
@@ -291,7 +301,7 @@
         }
         function delRes(key) { dbRef.ref('reservas/' + key).remove(); }
 
-        // CONFIGURACIÓN
+        // CONFIGURACIÓN GENERAL
         function loadGeneralConfig(c) {
             document.getElementById('h-open').value = c.o || '';
             document.getElementById('h-close').value = c.c || '';
@@ -299,6 +309,10 @@
             document.getElementById('c-mail').value = c.mail || '';
             document.getElementById('c-ig').value = c.ig || '';
             document.getElementById('c-fb').value = c.fb || '';
+            // Nuevos campos de ubicación
+            document.getElementById('c-dir').value = c.direccion || '';
+            document.getElementById('c-maps-link').value = c.maps_link || '';
+            document.getElementById('c-maps-embed').value = c.maps_embed || '';
         }
         function saveGeneral() {
             dbRef.ref('config').set({
@@ -307,8 +321,12 @@
                 wa: clean(document.getElementById('c-wa').value),
                 mail: clean(document.getElementById('c-mail').value),
                 ig: clean(document.getElementById('c-ig').value),
-                fb: clean(document.getElementById('c-fb').value)
-            });alert("Configuración general guardada");
+                fb: clean(document.getElementById('c-fb').value),
+                direccion: clean(document.getElementById('c-dir').value),
+                maps_link: clean(document.getElementById('c-maps-link').value),
+                maps_embed: clean(document.getElementById('c-maps-embed').value)
+            });
+            alert("Configuración web actualizada correctamente");
         }
 
         function showTab(id) {
