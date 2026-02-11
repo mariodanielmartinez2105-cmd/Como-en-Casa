@@ -68,24 +68,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             
             <div class="lg:col-span-1 space-y-6 reveal">
-                <a href="https://www.google.com/maps/search/?api=1&query=Av.+Primero+de+Mayo,+14,+35002+Las+Palmas+de+Gran+Canaria" target="_blank" class="block info-card p-10 hover:border-orange-600 transition-all group">
+                <a id="link-maps-dir" href="#" target="_blank" class="block info-card p-10 hover:border-orange-600 transition-all group">
                     <h3 class="text-orange-600 font-black-italic italic text-xl mb-4 group-hover:scale-105 transition-transform origin-left">DIRECCIÓN</h3>
-                    <p id="txt-dir" class="text-white font-bold text-lg mb-2">Av. Primero de Mayo, 14</p>
-                    <p class="text-gray-500 text-sm leading-relaxed uppercase tracking-tighter font-black">35002 - Las Palmas de Gran Canaria</p>
+                    <p id="txt-dir" class="text-white font-bold text-lg mb-2 italic">Cargando dirección...</p>
+                    <p class="text-gray-500 text-sm leading-relaxed uppercase tracking-tighter font-black">Las Palmas de Gran Canaria</p>
                     <div class="inline-block mt-8 text-orange-500 font-black uppercase text-[10px] tracking-widest border-b border-orange-500 pb-1 group-hover:text-white group-hover:border-white transition">Cómo llegar <i class="fas fa-arrow-right ml-2"></i></div>
                 </a>
 
                 <div class="info-card p-10">
                     <h3 class="text-orange-600 font-black-italic italic text-xl mb-4">CONTACTO</h3>
-                    <p id="txt-tel" class="text-white font-bold text-lg mb-2">+34 634 31 43 31</p>
-                    <p id="txt-mail" class="text-gray-500 text-sm font-black italic">hola@comoencasa.com</p>
+                    <p id="txt-tel" class="text-white font-bold text-lg mb-2">--</p>
+                    <p id="txt-mail" class="text-gray-500 text-sm font-black italic">--</p>
                 </div>
             </div>
 
             <div class="lg:col-span-2 reveal" style="transition-delay: 0.2s;">
                 <div class="map-container h-[500px] w-full">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3519.833513364239!2d-15.42158!3d28.10902!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc4095982846430b%3A0x28974a97371c1b1c!2sAv.%20Primero%20de%20Mayo%2C%2014%2C%2035002%20Las%20Palmas%20de%20Gran%20Canaria!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses" 
+                        id="iframe-mapa"
+                        src="" 
                         width="100%" 
                         height="100%" 
                         style="border:0;" 
@@ -105,7 +106,7 @@
         </p>
     </footer>
 
-    <a id="btn-wa" href="https://wa.me/34634314331" target="_blank" rel="noopener noreferrer" class="fixed bottom-8 right-8 z-[100] flex items-center gap-3 bg-black border-2 border-orange-600 text-white px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-all group">
+    <a id="btn-wa" href="#" target="_blank" rel="noopener noreferrer" class="fixed bottom-8 right-8 z-[100] flex items-center gap-3 bg-black border-2 border-orange-600 text-white px-8 py-4 rounded-full shadow-2xl hover:scale-110 transition-all group">
         <i class="fab fa-whatsapp text-2xl text-orange-500 group-hover:text-white"></i>
         <span class="font-black italic uppercase text-[10px] tracking-widest">WhatsApp</span>
     </a>
@@ -141,16 +142,35 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Sincronización con el Backend
             dbRef.ref('config').on('value', (snapshot) => {
                 const config = snapshot.val() || {};
                 
+                // Actualizar Teléfono y WhatsApp
                 if(config.wa) {
                     const safeWa = clean(config.wa).replace(/\s/g, '');
                     document.getElementById('btn-wa').href = `https://wa.me/${safeWa}`;
                     document.getElementById('txt-tel').innerText = clean(config.wa);
                 }
+                
+                // Actualizar Email
                 if(config.mail) {
                     document.getElementById('txt-mail').innerText = clean(config.mail);
+                }
+
+                // Actualizar Dirección de texto
+                if(config.direccion) {
+                    document.getElementById('txt-dir').innerText = clean(config.direccion);
+                }
+
+                // Actualizar Enlace de Google Maps (botón "Cómo llegar")
+                if(config.maps_link) {
+                    document.getElementById('link-maps-dir').href = config.maps_link;
+                }
+
+                // Actualizar Mapa interactivo (Iframe)
+                if(config.maps_embed) {
+                    document.getElementById('iframe-mapa').src = config.maps_embed;
                 }
             });
             
