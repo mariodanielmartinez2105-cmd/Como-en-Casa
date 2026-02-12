@@ -11,8 +11,10 @@
         h2 { color: #ea580c; font-weight: bold; text-transform: uppercase; margin-top: 2rem; margin-bottom: 0.5rem; }
         .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
         strong { color: #fff; }
-        /* Bloquea la selección de texto para evitar copias rápidas de tus datos */
         .no-select { user-select: none; }
+        
+        /* Técnica de protección: Invierte el texto en el código pero lo muestra normal */
+        .proteccion-datos { unicode-bidi: bidi-override; direction: rtl; text-align: left; }
     </style>
 </head>
 <body>
@@ -25,10 +27,10 @@
             <h2>1. Aviso Legal</h2>
             <p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información, le informamos que el titular de este sitio web es:</p>
             <ul class="mt-4 space-y-2 bg-white/5 p-6 rounded-2xl border border-white/10">
-                <li><strong>Nombre del Titular:</strong>Eduardo González López</li>
-                <li><strong>NIF/CIF:</strong>16822387A</li>
-                <li><strong>Domicilio Social:</strong>Av. Primero de Mayo ,14 ,35002, Las Palmas de Gran Canaria,Las Palmas</li>
-                <li><strong>Email de Contacto:</strong> <span class="text-orange-600">edalopez09@gmail.com</span></li>
+                <li><strong>Nombre del Titular:</strong> Eduardo González López</li>
+                <li><strong>NIF/CIF:</strong> <span class="proteccion-datos">A78322861</span></li>
+                <li><strong>Domicilio Social:</strong> Av. Primero de Mayo ,14 ,35002, Las Palmas de Gran Canaria, Las Palmas</li>
+                <li><strong>Email de Contacto:</strong> <span class="text-orange-600 proteccion-datos">moc.liamg@90zepolade</span></li>
             </ul>
         </section>
 
