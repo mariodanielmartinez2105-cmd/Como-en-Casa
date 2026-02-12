@@ -119,7 +119,7 @@
                         </div>
                         <div>
                             <label class="text-[10px] font-black uppercase text-gray-500">Google Maps Embed URL (Iframe del mapa)</label>
-                            <input type="text" id="c-maps-embed" placeholder="https://www.google.com/maps/embed?..." class="input-master">
+                            <input type="text" id="c-maps-embed" placeholder="Pegar código <iframe> o URL aquí" class="input-master">
                         </div>
                     </div>
 
@@ -301,7 +301,7 @@
         }
         function delRes(key) { dbRef.ref('reservas/' + key).remove(); }
 
-        // CONFIGURACIÓN GENERAL
+        // CONFIGURACIÓN GENERAL (CORREGIDA LA LÓGICA DE GUARDADO DEL MAPA)
         function loadGeneralConfig(c) {
             document.getElementById('h-open').value = c.o || '';
             document.getElementById('h-close').value = c.c || '';
@@ -309,12 +309,15 @@
             document.getElementById('c-mail').value = c.mail || '';
             document.getElementById('c-ig').value = c.ig || '';
             document.getElementById('c-fb').value = c.fb || '';
-            // Nuevos campos de ubicación
             document.getElementById('c-dir').value = c.direccion || '';
             document.getElementById('c-maps-link').value = c.maps_link || '';
             document.getElementById('c-maps-embed').value = c.maps_embed || '';
         }
+
         function saveGeneral() {
+            // Recogemos el valor tal cual lo pega el usuario
+            let embedValue = document.getElementById('c-maps-embed').value.trim();
+
             dbRef.ref('config').set({
                 o: document.getElementById('h-open').value,
                 c: document.getElementById('h-close').value,
@@ -324,7 +327,7 @@
                 fb: clean(document.getElementById('c-fb').value),
                 direccion: clean(document.getElementById('c-dir').value),
                 maps_link: clean(document.getElementById('c-maps-link').value),
-                maps_embed: clean(document.getElementById('c-maps-embed').value)
+                maps_embed: embedValue // Guardamos el texto del mapa sin alterar para que la web lo procese
             });
             alert("Configuración web actualizada correctamente");
         }

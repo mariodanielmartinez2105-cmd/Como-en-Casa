@@ -68,7 +68,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             
             <div class="lg:col-span-1 space-y-6 reveal">
-                <a id="link-maps-dir" href="https://maps.app.goo.gl/s8764XgCNW88jLV78?g_st=aw" target="_blank" class="block info-card p-10 hover:border-orange-600 transition-all group">
+                <a id="link-maps-dir" href="#" target="_blank" class="block info-card p-10 hover:border-orange-600 transition-all group">
                     <h3 class="text-orange-600 font-black-italic italic text-xl mb-4 group-hover:scale-105 transition-transform origin-left">DIRECCIÓN</h3>
                     <p id="txt-dir" class="text-white font-bold text-lg mb-2 italic">Av.Primero de Mayo 14 , Las Palmas de Gran Canaria,Las Palmas</p>
                     <p class="text-gray-500 text-sm leading-relaxed uppercase tracking-tighter font-black">Las Palmas de Gran Canaria</p>
@@ -112,7 +112,6 @@
     </a>
 
     <script>
-        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAER8_0CqDM9YGIXWc27yPQTnbjEtdPX8g",
             authDomain: "como-en-casa-web.firebaseapp.com",
@@ -125,13 +124,6 @@
         firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database();
 
-        const clean = (str) => {
-            if(!str) return "";
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML;
-        };
-
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
@@ -142,38 +134,29 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Sincronización con el Backend
             dbRef.ref('config').on('value', (snapshot) => {
                 const config = snapshot.val() || {};
                 
-                // Actualizar Teléfono y WhatsApp
                 if(config.wa) {
-                    const safeWa = clean(config.wa).replace(/\s/g, '');
+                    const safeWa = config.wa.replace(/\s/g, '');
                     document.getElementById('btn-wa').href = `https://wa.me/${safeWa}`;
-                    document.getElementById('txt-tel').innerText = clean(config.wa);
+                    document.getElementById('txt-tel').innerText = config.wa;
                 }
                 
-                // Actualizar Email
-                if(config.mail) {
-                    document.getElementById('txt-mail').innerText = clean(config.mail);
-                }
+                if(config.mail) document.getElementById('txt-mail').innerText = config.mail;
+                if(config.direccion) document.getElementById('txt-dir').innerText = config.direccion;
+                if(config.maps_link) document.getElementById('link-maps-dir').href = config.maps_link;
 
-                // Actualizar Dirección de texto
-                if(config.direccion) {
-                    document.getElementById('txt-dir').innerText = clean(config.direccion);
-                }
-
-                // Actualizar Enlace de Google Maps (botón "Cómo llegar")
-                if(config.maps_link) {
-                    document.getElementById('link-maps-dir').href = config.maps_link;
-                }
-
-                // Actualizar Mapa interactivo (Iframe)
+                // --- UNICO CAMBIO: Lógica para que el mapa no falle ---
                 if(config.maps_embed) {
-                    document.getElementById('iframe-mapa').src = config.maps_embed;
+                    let mapUrl = config.maps_embed.trim();
+                    if(mapUrl.includes('<iframe')) {
+                        const match = mapUrl.match(/src="([^"]+)"/);
+                        mapUrl = match ? match[1] : "";
+                    }
+                    document.getElementById('iframe-mapa').src = mapUrl;
                 }
             });
-            
             reveal();
         });
 
